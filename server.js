@@ -60,7 +60,13 @@ app.use(bodyParser.json());
 app.options(cors({ origin: '*' }));
 app.use(cors({ origin: '*' }));
 app.use(function(req, res, next) {
-    global.langCode = req.headers['lang-code'];
+    /* for language */
+    var langCode = req.headers['lang-code'];
+    if(typeof langCode != "undefined" && langCode != "") {
+        global.language = langCode
+    } else {
+        global.language = 'en'
+    }
     res.header("Access-Control-Expose-Headers", "x-access-token");
     next();
 });

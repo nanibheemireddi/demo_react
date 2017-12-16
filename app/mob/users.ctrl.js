@@ -27,9 +27,11 @@ module.exports = {
                     helper.formatResponse(response, res, '');
                 } else {
                     var token = jwt.sign(data, process.env.JWT_SECRET_KEY);
-                    res.setHeader('x-access-token', token);
-                    data.isNewUser =  false;
-                    response.data = data;
+                    // res.setHeader('x-access-token', token);
+                    var tempData = data.toJSON();
+                    tempData.isNewUser = false;
+                    tempData.token = token;
+                    response.data = tempData;
                     helper.formatResponse(response, res, '');
                 }
             });
@@ -57,8 +59,10 @@ module.exports = {
             _mongoose.save(userSave).then(function(userData) {
                 var response = {};
                 var token = jwt.sign(userData, process.env.JWT_SECRET_KEY);
-                res.setHeader('x-access-token', token);
-                response.data = userData; 
+                // res.setHeader('x-access-token', token);
+                var data = userData.toJSON();
+                data.token = token;
+                response.data = data; 
                 helper.formatResponse(response, res, '');
             }).catch(function(error) {
                 console.log("error", error);
@@ -67,7 +71,30 @@ module.exports = {
         });
     },
 
+    /**
+     * Action for updating user details
+     * 
+     * @method updateUser
+     * @param {req} request
+     * @param {res} response
+     * @return {status} res -If it returns error then the status is false otherwise true. 
+     */
     
+    updateUser: function(req, res) {
+        var requiredParams = ['firstName', 'lastName'];
+        helper.validateRequiredParams(req, res, requiredParams).then(function() {
+            var updateParams = req.body;
+            var condition = {_id: requestUserId};
+            _mongoose.update(models.users, condition, updateParams).then(function(data) {
+                var response = {};
+                response.data = data;
+                helper.formatResponse(response, res, '');
+            }).catch(function(error) {
+                helper.formatResponse('', res, error);
+            });
+        });        
+    },
+
     /**
      * Action for upload image
      * 
@@ -180,22 +207,22 @@ module.exports = {
                     as: "stateInfo"
                 }
             },
-            {
-                $lookup:{
-                    from: "country",
-                    localField: "country",
-                    foreignField: "_id",
-                    as: "countryInfo"
-                }
-            },
+            // {
+            //     $lookup:{
+            //         from: "country",
+            //         localField: "country",
+            //         foreignField: "_id",
+            //         as: "countryInfo"
+            //     }
+            // },
             {
                 $addFields: {
                     city: {$arrayElemAt: ["$cityInfo.name", 0]},
                     cityId: {$arrayElemAt: ["$cityInfo._id", 0]},
                     state: {$arrayElemAt: ["$stateInfo.name", 0]},
                     stateId: {$arrayElemAt: ["$stateInfo._id", 0]},
-                    country: {$arrayElemAt: ["$countryInfo.name", 0]},
-                    countryId: {$arrayElemAt: ["$countryInfo._id", 0]}
+                    // country: {$arrayElemAt: ["$countryInfo.name", 0]},
+                    // countryId: {$arrayElemAt: ["$countryInfo._id", 0]}
                 }
             },
             { $project: { isDelete: 0, isActive: 0, otp: 0, cityInfo: 0, stateInfo: 0, countryInfo: 0} }
@@ -216,6 +243,5 @@ module.exports = {
             }
         });    
     },
-
-     
+    
 };

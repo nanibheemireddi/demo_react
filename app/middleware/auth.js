@@ -9,11 +9,11 @@ var allowed = [
    {url: '/mob/user/registration', method: 'POST'}, 
    {url: '/mob/user/otp-verify', method: 'POST'},
    {url: '/config/setup', method: 'GET'},
-   {url: '/mob/agriculture/get-categories', method: 'GET'}
-
+   {url: '/mob/agriculture/get-categories', method: 'GET'},
+   {url: '/mob/agriculture/get-items', method: 'GET'},
+   {url: '/mob/get-locations', method: 'GET'},
+   {url: '/mob/modern-technology', method: 'GET'}
 ];
-
-
 
 function checkIfRouteExistInAllowedList(route, method) {    
     var evens = _.filter(allowed, function (obj) {        

@@ -10,7 +10,7 @@ var userSchema = new Schema({
     country: {type: Schema.Types.ObjectId, ref: 'country'},
     state: {type: Schema.Types.ObjectId, ref: 'states'},
     city: {type: Schema.Types.ObjectId, ref: 'cities'},
-    isActive: {type: Boolean, default: false},
+    isActive: {type: Boolean, default: true},
     otp: {
         value: {type: Number, default: 123456},
         timeOfCreation: {type: Date, default: Date.now}

@@ -6,15 +6,16 @@
 */
 
 var AgricultureSchema = new Schema({
-    title: {type: String, required: true},
+    title: {type: Object, required: true},
     steps: [
         {
-            title: {type: String},
-            description: {type: String},
+            title: {type: Object},
+            description: {type: Object},
             imageName: {type: String},
         }
     ],
-    languageCode: {type: String},
+    item: {type: Schema.Types.ObjectId, ref: 'agricultureItems'},
+    link: {type: Object},
     isActive: {type: Boolean, default: false},
     isDelete: {type: Boolean, default: false}
 }, {
